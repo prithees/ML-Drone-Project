@@ -1,68 +1,61 @@
-from flask import Flask, request, render_template 
+from flask import Flask, render_template, request, jsonify
+import openai
 import os
-import tensorflow as tf
-import numpy as np
-from PIL import Image, ImageOps
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads/'
-
-# Create the uploads directory if it doesn't exist
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
-
-# Load the ML model and class names
-model = tf.keras.models.load_model("uploads/keras_model.h5", compile=False)
-with open("uploads/labels.txt", "r") as f:
-    class_names = [line.strip() for line in f.readlines()]
-print(f"Loaded {len(class_names)} class names.")
-for i in range(len(class_names)):
-    print(f"Class{i} : {class_names[i]}")
-
-@tf.function(reduce_retracing=True)
-def predict_image(image_array):
-    normalized_image_array = (tf.cast(image_array, tf.float32) / 127.5) - 1
-    data = tf.expand_dims(normalized_image_array, axis=0)
-    prediction = model(data)
-    index = tf.argmax(prediction, axihts=-1)
-    confidence_score = tf.reduce_max(prediction)
-    return index, confidence_score
-
+openai.api_key = ""
 @app.route("/")
-def home():
-    return render_template('index.html')
+def index():
+    return render_template("index.html")
 
 @app.route("/upload", methods=['POST'])
-def upload_file():
+def uploading():
     if 'file' not in request.files:
         return "No file part"
+
     file = request.files['file']
+
     if file.filename == '':
         return "No selected file"
+
     if file:
         filename = file.filename
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
-        
-        # Process the uploaded image with the ML model
-        image = Image.open(file_path).convert("RGB")
-        size = (224, 224)
-        image = ImageOps.fit(image, size, Image.Resampling.LANCZOS)
-        image_array = np.asarray(image)
+        return "File uploaded successfully"
 
-        if image_array.shape != (224, 224, 3):
-            return f"Expected image shape (224, 224, 3), got {image_array.shape}"
+@app.route("/chat", methods=['POST'])
+def chat():
+    user_input = request.json.get("message")
+    response = openai.Completion.create(
+        engine="gpt-3.5-turbo",
+        prompt=user_input,
+        max_tokens=150,
+        n=1,
+        stop=None,
+        temperature=0.7,
+    )
+    bot_response = response.choices[0].text.strip()
+    return jsonify({"response": bot_response})
 
-        # Call predict_image function
-        index_tensor, confidence_tensor = predict_image(image_array)
-
-        # Convert tensors to numpy arrays for output
-        index = index_tensor.numpy()[0]
-        confidence_score = confidence_tensor.numpy()
-
-        print(f"Predicted index: {index}, Confidence score: {confidence_score} value")
-
-        class_name = class_names[index]
+def generate_response(prompt):
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=150,
+        n=1,
+        stop=None,
+        temperature=0.7,
+    )
+    return response.choices[0].text.strip()
 
 if __name__ == "__main__":
+    print("Chatbot: Hello! How can I help you today?")
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() in ["exit", "quit", "bye"]:
+            print("Chatbot: Goodbye!")
+            break
+        response = generate_response(user_input)
+        print(f"Chatbot: {response}")
     app.run(debug=True)
