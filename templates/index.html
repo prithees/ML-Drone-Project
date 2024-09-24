@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Full height of the viewport */
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center; /* Center align the headings */
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center align form elements */
+            width: 300px; /* Fixed width for form */
+        }
+
+        input[type="file"] {
+            margin-bottom: 20px; /* Space below the file input */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%; /* Full width for file input */
+            box-sizing: border-box; /* Include padding in width */
+        }
+
+        input[type="submit"] {
+            background-color: #28a745; /* Green background */
+            color: white; /* White text */
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px; /* Font size for the button */
+            transition: background-color 0.3s; /* Smooth transition for hover effect */
+        }
+
+        input[type="submit"]:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Smart Drone Pesticide Spraying With ML</h1>
+    <h1>Upload an Image</h1>
+    <br>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="Upload">
+    </form>
+</body>
+
+</html>

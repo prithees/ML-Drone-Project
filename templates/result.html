@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 1.2em;
+        }
+        .confidence {
+            font-weight: bold;
+            color: #0066cc;
+        }
+        .container3 {
+            margin-top: 20px; 
+            padding: 20px; 
+            background-color: #f9f9f9; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
+        }
+
+        .container3 h2 {
+            color: #333; 
+            font-size: 1.5em; 
+        }
+
+        .container3 p {
+            font-size: 1.1em; 
+            line-height: 1.6; 
+        }
+
+        .container2 {
+            margin-top: 20px;  
+            padding: 15px;     
+            background-color: #e9f7ef; 
+            border-left: 5px solid #28a745; 
+            border-radius: 5px; 
+        }
+        .container2 p {
+            margin: 5px 0; 
+            font-size: 1em; 
+            line-height: 1.5; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Prediction Result</h1>
+        <p><strong>Predicted Class:</strong> {{ class_name }}</p>
+        <p><strong>Confidence Score:</strong> <span class="confidence">{{ confidence_score }}</span></p>
+        <div class="container3">
+        <h2>Recommended Pesticides</h2>
+        {% if class_name == '1 Turmeric_pulli' %}
+            <p class="class_a">Organic Pesticides</p>
+            <div class="container2">
+                <p>Step 1 : Take Brown sugar,Fish Waste,Spoilled Banannas,Fresh Cowdunk and pealed Papay skin in small quantity.</p>
+                <p>Step 2 : Soak Brown Sugar,Fish Waste,Spoiled Bananas for 2-3 days.</p>
+                <p>Step 3 : For a litre of Water add 100ml of the soaked content and spray the pest.</p>
+                <p>Step 4 : After the pest is sprayed put some of the Fresh Cowdunk and grinded Papaya Skin on top of the affected leaves.</p>
+            </div>
+        {% elif class_name == '0 turmeric_golden_blight' %}
+            <p class="class_b">Organic Pesticides</p>
+            <div class="container2">
+                <p>Step 1 : Take Brown sugar,Fish Waste,Spoilled Banannas,Fresh Cowdunk and pealed Papay skin in small quantity.</p>
+                <p>Step 2 : Soak Brown Sugar,Fish Waste,Spoiled Bananas for 2-3 days.</p>
+                <p>Step 3 : For a litre of Water add 100ml of the soaked content and spray the pest.</p>
+                <p>Step 4 : After the pest is sprayed put some of the Fresh Cowdunk and grinded Papaya Skin on top of the affected leaves.</p>
+            </div>
+        {% elif class_name == '2 turmeric_good' %}
+            <div class="container2">
+                <p class="class_c">No Need of Pesticides the plant is already in the good condition instead you can use Neem oil with Water to avoid Leaf Spot Disease.</p>
+            </div>
+        {% else %}
+            <p>Unknown class prediction. Please upload another image.</p>
+        {% endif %}
+        <p>Note:The Recommended Pesticides will give better results. If you have any other choices you can use it.</p>
+        </div>
+    </div>
+</body>
+</html>
