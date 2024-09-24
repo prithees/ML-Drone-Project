@@ -1,0 +1,3 @@
+0 turmeric_golden_blight
+1 Turmeric_pulli
+2 turmeric_good

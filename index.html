@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #26a8db;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        input[type="file"] {
+            margin: 10px 0;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Upload an Image</h1>
+    <br>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <br>
+        <input type="submit" value="Upload">
+    </form>
+
+    <h1 class="jumbotron text-center">Recommended Pesticides</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 offset-sm-3">
+                <div id="userInput">
+                    <input id="textInput" class="form-control" type="text" name="msg" placeholder="Type Your Message Here">
+                    <input id="buttonInput" class="btn btn-success form-control" type="submit" value="Send">
+                </div>
+            </div>
+        </div>
+    </div>    
+</body>
+</html>
