@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template 
+from flask import Flask, request, render_template, jsonify
 import os
 import tensorflow as tf
 import numpy as np
@@ -17,6 +17,9 @@ with open("uploads/labels.txt", "r") as f:
     class_names = [line.strip() for line in f.readlines()]
 print(f"Loaded {len(class_names)} class names.")
 
+# Global variable to store the last predicted class name
+predicted_class_name = None
+
 @tf.function(reduce_retracing=True)
 def predict_image(image_array):
     normalized_image_array = (tf.cast(image_array, tf.float32) / 127.5) - 1
@@ -29,8 +32,10 @@ def predict_image(image_array):
 @app.route("/")
 def home():
     return render_template('index.html')
+
 @app.route("/upload", methods=['POST'])
 def upload_file():
+    global predicted_class_name  # Declare global to update the value
     if 'file' not in request.files:
         return "No file part"
     file = request.files['file']
@@ -56,9 +61,15 @@ def upload_file():
 
         print(f"Predicted index: {index}, Confidence score: {confidence_score}")
 
-        class_name = class_names[index]
-        return f"Predicted class: {class_name}, Confidence score: {confidence_score}"
+        # Update the global variable with the latest class name
+        predicted_class_name = class_names[index]
+        return render_template('result.html', class_name=predicted_class_name, confidence_score=confidence_score)
 
+@app.route("/get_class_name", methods=['GET'])
+def get_class_name():
+    if predicted_class_name is None:
+        return jsonify({"error": "No class name available. Please upload an image first."}), 404
+    return jsonify({"class_name": predicted_class_name})
 
 if __name__ == "__main__":
     app.run(debug=True)
