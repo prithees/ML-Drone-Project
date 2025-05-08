@@ -16,7 +16,6 @@ def get_class_name():
         data = response.json()
         return data["class_name"]
     except requests.RequestException as e:
-        print(f"Error retrieving class name: {e}")
         return None
 
 # Get the class name from the Flask server
