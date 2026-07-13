@@ -27,8 +27,8 @@ LED_PIN = 14
 # GPIO.setup(LED_PIN, GPIO.OUT)
 
 # Load the model and class names
-model = tf.keras.models.load_model("Uploads/keras_model.h5", compile=False)
-class_names = [line.strip() for line in open("Uploads/labels.txt", "r").readlines()]
+model = tf.keras.models.load_model("uploads/keras_model.h5", compile=False)
+class_names = [line.strip() for line in open("uploads/labels.txt", "r").readlines()]
 
 @tf.function(reduce_retracing=True)
 def predict_image(image_array):
