@@ -1,0 +1,12 @@
+{% if error %}
+<div class="error-banner">{{ error }}</div>
+{% else %}
+<div class="result-card">
+  <div class="status-pill good">Target set</div>
+  <p class="note" style="margin-top: 14px;">Learned from {{ num_references }} reference photo{{ 's' if num_references != 1 else '' }}.</p>
+  <div class="recommendation" style="margin-top: 10px;">
+    <h3>Action when matched</h3>
+    <p class="note">{{ guidance }}</p>
+  </div>
+</div>
+{% endif %}

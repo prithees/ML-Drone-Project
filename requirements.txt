@@ -1,0 +1,17 @@
+Flask
+tensorflow
+tf_keras
+numpy
+Pillow
+keyboard
+pyserial
+pynmea2
+RPi.GPIO; platform_machine == "armv6l" or platform_machine == "armv7l" or platform_machine == "aarch64"
+# bluezero also needs system packages on the Pi: `sudo apt install bluetooth
+# bluez python3-dbus python3-gi` (dbus-python/PyGObject don't build cleanly via pip).
+bluezero; platform_machine == "armv6l" or platform_machine == "armv7l" or platform_machine == "aarch64"
+# picamera2 is best installed via `sudo apt install python3-picamera2` on
+# Raspberry Pi OS (bundles prebuilt libcamera bindings); the pip package
+# alone won't have a working camera backend on a non-Pi machine.
+picamera2; platform_machine == "armv6l" or platform_machine == "armv7l" or platform_machine == "aarch64"
+pymavlink
