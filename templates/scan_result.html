@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scan Result</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <span class="tag">Leaf Scan · ML-Powered Drone</span>
+      <h1>Scan Result</h1>
+    </header>
+    <div class="card">
+      {% include '_scan_result_fragment.html' %}
+      <a class="reset-link" href="/">&larr; Scan another photo</a>
+    </div>
+  </div>
+</body>
+</html>

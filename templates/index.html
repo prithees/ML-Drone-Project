@@ -3,151 +3,115 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Upload Image</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f0f0f0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-
-    h1 {
-      color: #333;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    form {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 300px;
-    }
-
-    input[type="file"] {
-      margin-bottom: 20px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    input[type="submit"] {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 10px 15px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background-color 0.3s;
-    }
-
-    input[type="submit"]:hover {
-      background-color: #218838;
-    }
-
-    .contact-us {
-      margin-top: 20px;
-      text-align: center;
-    }
-
-    .contact-us a {
-      color: #007bff;
-      text-decoration: none;
-      font-size: 16px;
-    }
-
-    .contact-us a:hover {
-      text-decoration: underline;
-    }
-
-    .video-container {
-      display: none;
-      margin-top: 20px;
-    }
-
-    video {
-      max-width: 100%;
-      height: auto;
-    }
-
-    .show-video-button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background-color 0.3s, transform 0.3s;
-      margin-top: 20px;
-    }
-
-    .show-video-button:hover {
-      background-color: #0056b3;
-      transform: scale(1.05);
-    }
-  </style>
+  <title>Leaf Scan — Smart Drone Pesticide Spraying</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
 </head>
 <body>
-  <h1>Smart Drone Pesticide Spraying With ML</h1>
-  <h1>Upload an Image</h1>
-  <br />
-  <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" accept="image/*" />
-    <input type="submit" value="Upload" />
-  </form>
+  <div class="page">
+    <header class="hero">
+      <span class="tag">Leaf Scan · ML-Powered Drone</span>
+      <h1>Smart Drone Pesticide Spraying</h1>
+      <p>No fixed plant list, no training. Show it a few example photos of what to spray, then scan new photos against that target.</p>
+    </header>
 
-  <h2>Please Watch the Working Demo Video of the Drone</h2>
-  <button class="show-video-button" onclick="showVideo()">Show Video</button>
-  
-  <div class="video-container" id="videoContainer">
-    <video width="640" height="360" controls>
-      <source src="Video.mp4" type="video/mp4">
-      <source src="Video.webm" type="video/webm">
-      Your browser does not support the video tag.
-    </video>
+    <div class="card">
+      <h2>Current target</h2>
+      {% if target_set %}
+      <div class="result-card">
+        <div class="status-pill good">Target set</div>
+        <p class="note" style="margin-top: 14px;">Learned from {{ num_references }} reference photo{{ 's' if num_references != 1 else '' }}.</p>
+        <div class="recommendation" style="margin-top: 10px;">
+          <h3>Action when matched</h3>
+          <p class="note">{{ guidance }}</p>
+        </div>
+      </div>
+      {% else %}
+      <p class="note">No target set yet. Upload reference photos below to define what the drone should look for.</p>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h2>1. Set target</h2>
+      <p class="note" style="margin-top: -8px; margin-bottom: 14px;">Upload 3-10 example photos of the specific problem you want treated, and describe what to do about it. This replaces any previously set target.</p>
+      <form
+        hx-post="/enroll"
+        hx-target="#enrollResult"
+        hx-swap="innerHTML"
+        hx-encoding="multipart/form-data"
+        hx-disabled-elt="#enrollBtn"
+      >
+        <label class="dropzone" id="enrollDropzone">
+          <input type="file" id="enrollFileInput" name="file" accept="image/png, image/jpeg" multiple required />
+          <div class="icon">🗂️</div>
+          <div><strong>Click to upload</strong> reference photos</div>
+          <div class="hint" id="enrollFileCount">png / jpg · 3-10 photos</div>
+        </label>
+
+        <textarea
+          name="guidance"
+          placeholder="What should happen when this is matched? e.g. Spray organic neem oil mixture."
+          rows="3"
+          style="width: 100%; margin-top: 14px; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-1); color: var(--text); font-family: inherit; font-size: 0.9rem; resize: vertical;"
+        ></textarea>
+
+        <button type="submit" class="analyze" id="enrollBtn">
+          <span class="spinner htmx-indicator"></span>
+          <span>Set Target</span>
+        </button>
+      </form>
+
+      <div id="enrollResult"></div>
+    </div>
+
+    <div class="card">
+      <h2>2. Scan a photo</h2>
+      <form
+        hx-post="/scan"
+        hx-target="#scanResult"
+        hx-swap="innerHTML"
+        hx-encoding="multipart/form-data"
+        hx-disabled-elt="#scanBtn"
+      >
+        <label class="dropzone" id="dropzone">
+          <input type="file" id="fileInput" name="file" accept="image/png, image/jpeg" required />
+          <div class="icon">🌿</div>
+          <div><strong>Click to upload</strong> or drag and drop</div>
+          <div class="hint">png / jpg · up to 10MB</div>
+        </label>
+
+        <div class="preview" id="preview">
+          <img id="previewImg" alt="Selected photo preview" />
+          <div class="meta">
+            <div class="filename" id="previewName"></div>
+            <div class="filesize" id="previewSize"></div>
+          </div>
+        </div>
+
+        <button type="submit" class="analyze" id="scanBtn" disabled>
+          <span class="spinner htmx-indicator"></span>
+          <span>Scan Photo</span>
+        </button>
+      </form>
+
+      <div id="scanResult"></div>
+    </div>
+
+    <div class="card secondary">
+      <h2>Watch the drone in action</h2>
+      <button class="show-video-button" id="showVideoBtn">Show demo video</button>
+      <div class="video-container" id="videoContainer">
+        <video width="100%" controls>
+          <source src="Video.mp4" type="video/mp4" />
+          <source src="Video.webm" type="video/webm" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+
+    <p class="contact-us">Have questions? <a href="mailto:support@example.com">support@example.com</a></p>
   </div>
 
-  <div class="contact-us">
-    <h2>Contact Us</h2>
-    <p>If you have any questions, feel free to reach out to us!</p>
-    <a href="mailto:support@example.com">support@example.com</a>
-  </div>
-
-  <script>
-    function showVideo() {
-      document.getElementById("videoContainer").style.display = "block";
-    }
-
-    const form = document.querySelector('form');
-    form.addEventListener('submit', function(event) {
-      const fileInput = document.querySelector('input[type="file"]');
-      
-      // Check if a file is selected
-      if (!fileInput.value) {
-        event.preventDefault(); // Prevent form submission
-        alert('Please select a file to upload.');
-        return;
-      }
-      
-      // Disable the submit button and show loading text
-      const submitButton = form.querySelector('input[type="submit"]');
-      submitButton.value = 'Uploading...';
-      submitButton.disabled = true;
-    });
-  </script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

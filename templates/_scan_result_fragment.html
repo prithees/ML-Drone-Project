@@ -1,0 +1,24 @@
+{% if error %}
+<div class="error-banner">{{ error }}</div>
+{% else %}
+<div class="result-card">
+  <div class="result-header">
+    <div class="status-pill {{ 'warning' if matched else 'good' }}">{{ 'Match' if matched else 'No match' }}</div>
+  </div>
+  <div class="confidence-label">
+    <span>similarity</span>
+    <span>{{ (score * 100) | round(1) }}%</span>
+  </div>
+  <div class="confidence-bar">
+    <div class="confidence-bar-fill" style="width: {{ (score * 100) | round(1) }}%;"></div>
+  </div>
+  {% if matched %}
+  <div class="recommendation">
+    <h3>Action</h3>
+    <p class="note">{{ guidance }}</p>
+  </div>
+  {% else %}
+  <p class="note">This photo doesn't closely resemble the target references. No action needed.</p>
+  {% endif %}
+</div>
+{% endif %}
